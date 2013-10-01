@@ -5,7 +5,6 @@ This library allows an Android application to use the ZXing library for scaning 
 This library is based on the a Google code project that hasn't been maintained for a while (<a href="https://code.google.com/p/android-zxinglib/">link</a>), and uses the core decoding library from the <a href="https://code.google.com/p/zxing/">ZXing library</a>. Both of these code bases have their own license which at the time of posting is Apache 2.0.
 
 ##License
-=================
 Copyright 2013 SafetyCulture
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.
