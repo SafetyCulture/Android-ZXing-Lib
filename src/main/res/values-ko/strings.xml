@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="zxinglib_app_name">ZXingLib</string>
+    <string name="zxinglib_msg_default_status">바코드를 스캔할 수 있도록 뷰파인더 사각형 안에 위치시키십시오.</string>
+</resources>
