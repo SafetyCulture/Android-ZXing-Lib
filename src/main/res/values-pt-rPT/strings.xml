@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="zxinglib_app_name">ZXingLib</string>
+    <string name="zxinglib_msg_default_status">Coloque um código de barras dentro do retângulo do visor\npara efetuar o scanner.</string>
+</resources>
