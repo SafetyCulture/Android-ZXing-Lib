@@ -23,9 +23,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
-    <application
-        android:icon="@drawable/zxinglib_icon"
-        android:label="@string/zxinglib_app_name">
+    <application>
         <activity
             android:name="com.safetyculture.utils.zxing.CaptureActivity"
             android:screenOrientation="landscape"
