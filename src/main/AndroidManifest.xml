@@ -12,9 +12,7 @@
         android:anyDensity="true"/>
     <uses-feature android:name="android.hardware.camera"/>
 
-    <application
-        android:icon="@drawable/zxinglib_icon"
-        android:label="@string/zxinglib_app_name">
+    <application>
         <activity
             android:name="com.safetyculture.utils.zxing.CaptureActivity"
             android:screenOrientation="landscape"
