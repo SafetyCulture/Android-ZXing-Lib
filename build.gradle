@@ -3,7 +3,7 @@ buildscript {
         repositories {
             mavenCentral()
         }
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
