@@ -19,7 +19,6 @@ package com.safetyculture.utils.zxing.camera;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
-import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -72,7 +71,6 @@ final class CameraConfigurationManager
 		Camera.Parameters parameters = camera.getParameters();
 		Log.d(TAG, "Setting preview size: " + cameraResolution);
 		parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
-		setFlash(parameters);
 		setZoom(parameters);
 		camera.setParameters(parameters);
 	}
@@ -199,22 +197,6 @@ final class CameraConfigurationManager
 		return tenBestValue;
 	}
 
-	private void setFlash(Camera.Parameters parameters)
-	{
-		// This is a hack to turn the flash off on the Samsung Galaxy and the Behold II
-		// as advised by Samsung, neither of which respected the official parameter.
-		if(Build.MODEL.contains("Behold II") && CameraManager.SDK_INT == 3)
-		{ // 3 = Cupcake
-			parameters.set("flash-value", 1);
-		}
-		else
-		{
-			parameters.set("flash-value", 2);
-		}
-		// This is the standard setting to turn the flash off that all devices should honor.
-		parameters.set("flash-mode", "off");
-	}
-
 	private void setZoom(Camera.Parameters parameters)
 	{
 		String zoomSupportedString = parameters.get("zoom-supported");
@@ -291,5 +273,4 @@ final class CameraConfigurationManager
 		if(takingPictureZoomMaxString != null)
 			parameters.set("taking-picture-zoom", tenDesiredZoom);
 	}
-
 }

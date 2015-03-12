@@ -9,8 +9,5 @@ public class ZXingLibConfig implements Serializable
 	public static final String INTENT_KEY = "zxingLibConfig";
 
 	public boolean copyToClipboard = false;
-	public boolean vibrateOnDecoded = false;
-	public boolean playBeepOnDecoded = true;
 	public boolean useFrontLight = false;
-	public boolean reverseImage = false;
 }
