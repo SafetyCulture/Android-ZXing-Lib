@@ -27,21 +27,19 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.safetyculture.utils.zxing.camera.CameraManager;
 import com.safetyculture.utils.zxing.camera.PlanarYUVLuminanceSource;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 final class DecodeHandler extends Handler
 {
-
 	private static final String TAG = DecodeHandler.class.getSimpleName();
 
 	private final CaptureActivity activity;
 	private final MultiFormatReader multiFormatReader;
 	private boolean running = true;
 
-	DecodeHandler(CaptureActivity activity, Hashtable<DecodeHintType, Object> hints)
+	DecodeHandler(CaptureActivity activity, Map<DecodeHintType, Object> hints)
 	{
 		multiFormatReader = new MultiFormatReader();
 		multiFormatReader.setHints(hints);
@@ -52,18 +50,16 @@ final class DecodeHandler extends Handler
 	public void handleMessage(Message message)
 	{
 		if(!running)
-		{
 			return;
-		}
+
 		if(message.what == R.id.zxinglib_decode)
-		{
 			decode((byte[]) message.obj, message.arg1, message.arg2);
-		}
 		else if(message.what == R.id.zxinglib_quit)
 		{
 			running = false;
 			Looper.myLooper().quit();
 		}
+
 	}
 
 	/**
@@ -78,37 +74,45 @@ final class DecodeHandler extends Handler
 	{
 		long start = System.currentTimeMillis();
 		Result rawResult = null;
-		PlanarYUVLuminanceSource source = CameraManager.get().buildLuminanceSource(data, width, height);
-		BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-		try
+		PlanarYUVLuminanceSource source = activity.getCameraManager().buildLuminanceSource(data, width, height);
+		if(source != null)
 		{
-			rawResult = multiFormatReader.decodeWithState(bitmap);
-		}
-		catch(ReaderException re)
-		{
-			// continue
-		}
-		finally
-		{
-			multiFormatReader.reset();
+			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+			try
+			{
+				rawResult = multiFormatReader.decodeWithState(bitmap);
+			}
+			catch(ReaderException re)
+			{
+				// continue
+			}
+			finally
+			{
+				multiFormatReader.reset();
+			}
 		}
 
+		Handler handler = activity.getHandler();
 		if(rawResult != null)
 		{
 			// Don't log the barcode contents for security.
 			long end = System.currentTimeMillis();
 			Log.d(TAG, "Found barcode in " + (end - start) + " ms");
-			Message message = Message.obtain(activity.getHandler(), R.id.zxinglib_decode_succeeded, rawResult);
-			Bundle bundle = new Bundle();
-			bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
-			message.setData(bundle);
-			message.sendToTarget();
+			if(handler != null)
+			{
+				Message message = Message.obtain(handler, R.id.zxinglib_decode_succeeded, rawResult);
+				Bundle bundle = new Bundle();
+				message.setData(bundle);
+				message.sendToTarget();
+			}
 		}
 		else
 		{
-			Message message = Message.obtain(activity.getHandler(), R.id.zxinglib_decode_failed);
-			message.sendToTarget();
+			if(handler != null)
+			{
+				Message message = Message.obtain(handler, R.id.zxinglib_decode_failed);
+				message.sendToTarget();
+			}
 		}
 	}
-
 }

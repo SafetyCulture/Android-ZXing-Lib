@@ -22,4 +22,5 @@
     <item type="id" name="zxinglib_decode_succeeded"/>
     <item type="id" name="zxinglib_quit"/>
     <item type="id" name="zxinglib_return_scan_result"/>
+    <item type="id" name="zxinglib_restart_preview"/>
 </resources>

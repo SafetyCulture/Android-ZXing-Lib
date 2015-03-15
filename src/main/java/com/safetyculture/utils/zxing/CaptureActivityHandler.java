@@ -19,15 +19,18 @@ package com.safetyculture.utils.zxing;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.Result;
 import com.safetyculture.utils.zxing.camera.CameraManager;
 
-import java.util.Vector;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * This class handles all the messaging which comprises the state machine for
@@ -37,9 +40,9 @@ import java.util.Vector;
  */
 public final class CaptureActivityHandler extends Handler
 {
-
 	private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
+	private final CameraManager cameraManager;
 	private final CaptureActivity activity;
 	private final DecodeThread decodeThread;
 	private State state;
@@ -51,47 +54,49 @@ public final class CaptureActivityHandler extends Handler
 		DONE
 	}
 
-	CaptureActivityHandler(CaptureActivity activity, Vector<BarcodeFormat> decodeFormats,
-						   String characterSet)
+	CaptureActivityHandler(CaptureActivity activity,
+						   Collection<BarcodeFormat> decodeFormats,
+						   Map<DecodeHintType, ?> baseHints,
+						   String characterSet,
+						   CameraManager cameraManager)
 	{
 		this.activity = activity;
-		decodeThread = new DecodeThread(activity, decodeFormats, characterSet,
+		decodeThread = new DecodeThread(activity, decodeFormats, baseHints, characterSet,
 				new ViewfinderResultPointCallback(activity.getViewfinderView()));
 		decodeThread.start();
 		state = State.SUCCESS;
 
 		// Start ourselves capturing previews and decoding.
-		CameraManager.get().startPreview();
+		this.cameraManager = cameraManager;
+		cameraManager.startPreview();
 		restartPreviewAndDecode();
 	}
 
 	@Override
 	public void handleMessage(Message message)
 	{
-		if(message.what == R.id.zxinglib_auto_focus)
+		if(message.what == R.id.zxinglib_decode_succeeded)
 		{
-			//Log.d(TAG, "Got auto-focus message");
-			// When one auto focus pass finishes, start another. This is the closest thing to
-			// continuous AF. It does seem to hunt a bit, but I'm not sure what else to do.
-			if(state == State.PREVIEW)
-			{
-				CameraManager.get().requestAutoFocus(this, R.id.zxinglib_auto_focus);
-			}
-		}
-		else if(message.what == R.id.zxinglib_decode_succeeded)
-		{
-			Log.d(TAG, "Got decode succeeded message");
 			state = State.SUCCESS;
 			Bundle bundle = message.getData();
-			Bitmap barcode = bundle == null ? null : (Bitmap) bundle
-					.getParcelable(DecodeThread.BARCODE_BITMAP);
-			activity.handleDecode((Result) message.obj, barcode);
+			Bitmap barcode = null;
+			if(bundle != null)
+			{
+				byte[] compressedBitmap = bundle.getByteArray(DecodeThread.BARCODE_BITMAP);
+				if(compressedBitmap != null)
+				{
+					barcode = BitmapFactory.decodeByteArray(compressedBitmap, 0, compressedBitmap.length, null);
+					// Mutable copy:
+					barcode = barcode.copy(Bitmap.Config.ARGB_8888, true);
+				}
+			}
+			activity.handleDecode((Result) message.obj, barcode, 1);
 		}
 		else if(message.what == R.id.zxinglib_decode_failed)
 		{
 			// We're decoding as fast as possible, so when one decode fails, start another.
 			state = State.PREVIEW;
-			CameraManager.get().requestPreviewFrame(decodeThread.getHandler(),
+			cameraManager.requestPreviewFrame(decodeThread.getHandler(),
 					R.id.zxinglib_decode);
 		}
 		else if(message.what == R.id.zxinglib_return_scan_result)
@@ -100,13 +105,12 @@ public final class CaptureActivityHandler extends Handler
 			activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
 			activity.finish();
 		}
-
 	}
 
 	public void quitSynchronously()
 	{
 		state = State.DONE;
-		CameraManager.get().stopPreview();
+		cameraManager.stopPreview();
 		Message quit = Message.obtain(decodeThread.getHandler(), R.id.zxinglib_quit);
 		quit.sendToTarget();
 		try
@@ -128,11 +132,8 @@ public final class CaptureActivityHandler extends Handler
 		if(state == State.SUCCESS)
 		{
 			state = State.PREVIEW;
-			CameraManager.get()
-					.requestPreviewFrame(decodeThread.getHandler(), R.id.zxinglib_decode);
-			CameraManager.get().requestAutoFocus(this, R.id.zxinglib_auto_focus);
+			cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.zxinglib_decode);
 			activity.drawViewfinder();
 		}
 	}
-
 }

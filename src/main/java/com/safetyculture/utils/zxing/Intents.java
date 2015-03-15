@@ -30,7 +30,6 @@ public final class Intents
 
 	public static final class Scan
 	{
-
 		/**
 		 * By default, sending Scan.ACTION will decode all barcodes that we understand. However it
 		 * may be useful to limit scanning to certain formats. Use Intent.putExtra(MODE, value) with
@@ -61,6 +60,15 @@ public final class Intents
 		 * Decode only Data Matrix codes.
 		 */
 		public static final String DATA_MATRIX_MODE = "DATA_MATRIX_MODE";
+
+		public static final String AZTEC_MODE = "AZTEC_MODE";
+		public static final String PDF417_MODE = "PDF417_MODE";
+		public static final String RESULT_UPC_EAN_EXTENSION = "RESULT_UPC_EAN_EXTENSION";
+		public static final String RESULT_ORIENTATION = "RESULT_ORIENTATION";
+		public static final String RESULT_ERROR_CORRECTION_LEVEL = "RESULT_ERROR_CORRECTION_LEVEL";
+		public static final String RESULT_BYTE_SEGMENTS_PREFIX = "RESULT_BYTE_SEGMENTS_PREFIX";
+		public static final String CAMERA_ID = "CAMERA_ID";
+		public static final String PROMPT_MESSAGE = "PROMPT_MESSAGE";
 
 		/**
 		 * Comma-separated list of formats to scan for. The values must match the names of
