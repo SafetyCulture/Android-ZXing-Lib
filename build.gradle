@@ -10,6 +10,9 @@ android {
     }
 }
 
+pmd.enabled = false
+checkstyle.enabled = false
+
 dependencies {
     repositories {
         mavenCentral()
