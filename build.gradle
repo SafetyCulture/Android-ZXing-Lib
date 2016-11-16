@@ -1,21 +1,12 @@
-buildscript {
-    dependencies {
-        repositories {
-            mavenCentral()
-        }
-        classpath 'com.android.tools.build:gradle:0.9.+'
-    }
-}
-
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 7
-        targetSdkVersion 19
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
 }
 
@@ -27,5 +18,5 @@ dependencies {
         mavenCentral()
     }
 
-    compile fileTree(dir: 'libs', include: '*.jar' )
+    compile 'com.google.zxing:core:3.2.0'
 }
