@@ -1,5 +1,6 @@
 package com.safetyculture.utils.zxing.integrator;
 
+import android.support.v4.app.Fragment;
 import com.safetyculture.utils.zxing.CaptureActivity;
 import com.safetyculture.utils.zxing.Intents;
 import com.safetyculture.utils.zxing.config.ZXingLibConfig;
@@ -78,6 +79,13 @@ public final class IntentIntegrator
 		intent.putExtra(Intents.Scan.CHARACTER_SET, characterSet);
 		intent.putExtra(ZXingLibConfig.INTENT_KEY, config);
 		activity.startActivityForResult(intent, REQUEST_CODE);
+	}
+
+	public static void initiateScan(Fragment fragment, ZXingLibConfig config)
+	{
+		Intent intent = new Intent(fragment.getActivity(), CaptureActivity.class);
+		intent.putExtra(ZXingLibConfig.INTENT_KEY, config);
+		fragment.startActivityForResult(intent, REQUEST_CODE);
 	}
 
 	public static IntentResult parseActivityResult(int requestCode, int resultCode, Intent intent)
