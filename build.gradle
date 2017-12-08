@@ -15,6 +15,6 @@ dependencies {
         mavenCentral()
     }
 
-    compile 'com.google.zxing:core:3.2.0'
-    compile rootProject.ext.SupportFragmentV4
+    implementation 'com.google.zxing:core:3.2.0'
+    implementation rootProject.ext.SupportFragmentV4
 }
