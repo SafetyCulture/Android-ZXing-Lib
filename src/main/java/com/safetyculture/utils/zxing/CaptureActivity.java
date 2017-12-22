@@ -42,7 +42,6 @@ import com.safetyculture.utils.zxing.camera.CameraManager;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Map;
 
 /**
@@ -54,21 +53,9 @@ import java.util.Map;
  */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback
 {
-
 	private static final String TAG = CaptureActivity.class.getSimpleName();
 
 	private static final long DEFAULT_INTENT_RESULT_DURATION_MS = 1500L;
-	private static final long BULK_MODE_SCAN_DELAY_MS = 1000L;
-
-	private static final String[] ZXING_URLS = {"http://zxing.appspot.com/scan", "zxing://scan/"};
-
-	public static final int HISTORY_REQUEST_CODE = 0x0000bacc;
-
-	private static final Collection<ResultMetadataType> DISPLAYABLE_METADATA_TYPES =
-			EnumSet.of(ResultMetadataType.ISSUE_NUMBER,
-					ResultMetadataType.SUGGESTED_PRICE,
-					ResultMetadataType.ERROR_CORRECTION_LEVEL,
-					ResultMetadataType.POSSIBLE_COUNTRY);
 
 	private CameraManager cameraManager;
 	private CaptureActivityHandler handler;
@@ -104,6 +91,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 	{
 		super.onCreate(icicle);
 
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		Window window = getWindow();
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		setContentView(R.layout.zxinglib_capture);
@@ -124,18 +112,17 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		// off screen.
 		cameraManager = new CameraManager(getApplication());
 
-		viewfinderView = (ViewfinderView) findViewById(R.id.zxinglib_viewfinder_view);
+		viewfinderView = findViewById(R.id.zxinglib_viewfinder_view);
 		viewfinderView.setCameraManager(cameraManager);
 
-		statusView = (TextView) findViewById(R.id.zxinglib_status_view);
+		statusView = findViewById(R.id.zxinglib_status_view);
 
 		handler = null;
 		lastResult = null;
 
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		resetStatusView();
 
-		SurfaceView surfaceView = (SurfaceView) findViewById(R.id.zxinglib_preview_view);
+		SurfaceView surfaceView = findViewById(R.id.zxinglib_preview_view);
 		SurfaceHolder surfaceHolder = surfaceView.getHolder();
 		if(hasSurface)
 		{
@@ -208,7 +195,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		//historyManager = null; // Keep for onActivityResult
 		if(!hasSurface)
 		{
-			SurfaceView surfaceView = (SurfaceView) findViewById(R.id.zxinglib_preview_view);
+			SurfaceView surfaceView = findViewById(R.id.zxinglib_preview_view);
 			SurfaceHolder surfaceHolder = surfaceView.getHolder();
 			surfaceHolder.removeCallback(this);
 		}

@@ -27,7 +27,7 @@
         <activity
             android:name="com.safetyculture.utils.zxing.CaptureActivity"
             android:screenOrientation="landscape"
-            android:configChanges="orientation|keyboardHidden"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
