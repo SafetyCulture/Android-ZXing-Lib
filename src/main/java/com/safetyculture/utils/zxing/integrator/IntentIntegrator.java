@@ -1,6 +1,6 @@
 package com.safetyculture.utils.zxing.integrator;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import com.safetyculture.utils.zxing.CaptureActivity;
 import com.safetyculture.utils.zxing.Intents;
 import com.safetyculture.utils.zxing.config.ZXingLibConfig;
