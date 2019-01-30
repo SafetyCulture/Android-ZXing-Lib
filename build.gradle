@@ -16,5 +16,5 @@ dependencies {
     }
 
     implementation 'com.google.zxing:core:3.2.0'
-    implementation rootProject.ext.SupportFragmentV4
+    implementation rootProject.ext.Fragment
 }
